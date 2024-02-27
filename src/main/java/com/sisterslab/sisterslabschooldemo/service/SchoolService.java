@@ -4,6 +4,7 @@ import com.sisterslab.sisterslabschooldemo.converter.SchoolConverter;
 import com.sisterslab.sisterslabschooldemo.dto.request.SchoolRequest;
 import com.sisterslab.sisterslabschooldemo.dto.response.SchoolCreateResponse;
 import com.sisterslab.sisterslabschooldemo.exception.SchoolAlreadyExistsException;
+import com.sisterslab.sisterslabschooldemo.exception.SchoolNotFoundException;
 import com.sisterslab.sisterslabschooldemo.model.School;
 import com.sisterslab.sisterslabschooldemo.repository.SchoolRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,25 @@ public class SchoolService {
         }
         return SchoolConverter.convertToSchoolCreateResponse(
                 schoolRepository.save(SchoolConverter.convertToSchool(request)));
+    }
+
+    public void deleteSchool(Long id) {
+        schoolRepository.deleteById(id);
+    }
+
+    public SchoolCreateResponse getSchoolById(Long id) {
+        return SchoolConverter.convertToSchoolCreateResponse(findById(id));
+    }
+
+    private School findById(Long id){
+        return schoolRepository.findById(id)
+                .orElseThrow(()->new SchoolNotFoundException("School Not Found!"+id));
+    }
+
+
+    public void updateSchool(Long id, SchoolRequest request) {
+        School oldSchool = findById(id);
+        oldSchool.setSchoolName(request.getSchoolName());
+        schoolRepository.save(oldSchool);
     }
 }
