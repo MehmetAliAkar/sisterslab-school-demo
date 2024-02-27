@@ -4,12 +4,15 @@ import com.sisterslab.sisterslabschooldemo.dto.request.SchoolRequest;
 import com.sisterslab.sisterslabschooldemo.dto.response.SchoolCreateResponse;
 import com.sisterslab.sisterslabschooldemo.exception.SchoolAlreadyExistsException;
 import com.sisterslab.sisterslabschooldemo.exception.SchoolNotFoundException;
+import com.sisterslab.sisterslabschooldemo.model.School;
 import com.sisterslab.sisterslabschooldemo.repository.SchoolRepository;
 import com.sisterslab.sisterslabschooldemo.service.SchoolService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/schools")
@@ -35,6 +38,11 @@ public class SchoolController {
     @PostMapping("/{id}")
     public void updateSchool(@PathVariable Long id,@RequestBody SchoolRequest request){
         schoolService.updateSchool(id, request);
+    }
+
+    @GetMapping
+    public List<School> getSchool(@RequestParam(required = false) String name){
+        return schoolService.getSchool(name);
     }
 
     @ExceptionHandler(SchoolAlreadyExistsException.class)
